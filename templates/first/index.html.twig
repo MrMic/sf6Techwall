@@ -4,15 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ firstName }} - {{ lastName }}</title>
+    <title>{{ firstName|capitalize }} - {{ lastName|capitalize }}</title>
 </head>
 
 <body>
     <div>
         <h1>Bonjour {{ firstName }} {{ lastName }}</h1>
-            <h2>Le paramètre 'name' est : {{ nom }}</h2>
-        <p>Bonjour TechWall SF6</p>
+        <h2>Le paramètre 'name' est : {{ nom }}</h2>
     </div>
+    <p>Aujourd'hui, on est le : {{ "now" |date('d/m/Y') }}</p>
 </body>
 
 </html>
