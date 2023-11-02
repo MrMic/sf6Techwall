@@ -8,11 +8,25 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class TabController extends AbstractController
 {
-    #[Route('/tab', name: 'app_tab')]
-    public function index(): Response
+    /**
+     * Route pour la création d'un tableau
+     *
+     * @param  int $nb Nbre d'éléments dans le tableau
+     * @return Response
+     */
+    #[Route('/tab/{nb<\d+>?5}', name: 'app_tab')]
+    public function index($nb): Response
     {
-        return $this->render('tab/index.html.twig', [
-            'controller_name' => 'TabController',
-        ]);
+        $notes = [];
+
+        for ($i=0; $i < $nb; $i++) { 
+            $notes[] = rand(0, 20);
+        }
+
+        return $this->render(
+            'tab/index.html.twig', [
+            'notes' => $notes,
+            ]
+        );
     }
 }
