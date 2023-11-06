@@ -20,6 +20,7 @@ class FirstController extends AbstractController
                 'lastName' => 'CHLON',
                 'firstName' => 'Mic',
                 'nom' => $name,
+                'path' => '   '
             ]
         );
         // return new Response('Hello World');

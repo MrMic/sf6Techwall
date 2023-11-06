@@ -12,7 +12,8 @@
         <h1>Bonjour {{ firstName }} {{ lastName }}</h1>
         <h2>Le paramètre 'name' est : {{ nom }}</h2>
     </div>
-    <p>Aujourd'hui, on est le : {{ "now" |date('d/m/Y') }}</p>
+    <p>Aujourd'hui, on est le : {{ "now"|date('d/m/Y') }}</p>
+        <img src="{{ asset('assets/images/') ~ path|defaultImage }}" alt="">
 </body>
 
 </html>
