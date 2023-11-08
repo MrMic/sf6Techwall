@@ -30,7 +30,7 @@ class TabController extends AbstractController
         );
     }
 
-    #[Route('/tab2/users', name: 'tab.users')]
+    #[Route('/tab/users', name: 'tab.users')]
     public function users() : Response
     {
         $users = [
