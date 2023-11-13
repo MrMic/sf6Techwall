@@ -9,6 +9,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FirstController extends AbstractController
 {
+    #[Route('/template', name: 'template')]
+    public function template(): Response
+    {
+        return $this->render('template.html.twig');    
+    }
+
     #[Route('/sayHello/{name}', name: 'say.hello')]
     public function index(Request $request,$name): Response
     {
