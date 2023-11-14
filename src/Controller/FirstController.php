@@ -15,8 +15,8 @@ class FirstController extends AbstractController
         return $this->render('template.html.twig');    
     }
 
-    #[Route('/sayHello/{name}', name: 'say.hello')]
-    public function index(Request $request,$name): Response
+    // #[Route('/sayHello/{name}', name: 'say.hello')]
+    public function sayHello(Request $request,$name): Response
     {
         // dd($request);
 

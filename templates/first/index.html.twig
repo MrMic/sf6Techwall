@@ -1,19 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ firstName|capitalize }} - {{ lastName|capitalize }}</title>
-</head>
-
-<body>
     <div>
         <h1>Bonjour {{ firstName }} {{ lastName }}</h1>
         <h2>Le paramètre 'name' est : {{ nom }}</h2>
     </div>
     <p>Aujourd'hui, on est le : {{ "now"|date('d/m/Y') }}</p>
-        <img src="{{ asset('assets/images/') ~ path|defaultImage }}" alt="">
-</body>
-
-</html>
+<!--     <img src="{{ asset('assets/images/') ~ path|defaultImage }}" alt=""> -->
