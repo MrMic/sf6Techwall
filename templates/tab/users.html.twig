@@ -5,26 +5,29 @@
 {% block PageTitle %}Users{% endblock %}
 
 {% block body %}
-  {{ include('fragments/date-jour.html.twig') }}
+{{ include('fragments/date-jour.html.twig') }}
+<div class="alert alert-warning">
+  <a href="{{ path('app_tab', {nb : 7}) }}">Stats Table</a>
+</div>
 
-  <table class="table">
-    <tr class="table-active">
-      <td>Firstname</td>
-      <td>Name</td>
-      <td>Age</td>
-      <td>Message</td>
-    </tr>
-    {% for user in users %}
-    <tr class="table-{% if loop.index is odd %}danger{% else %}warning{% endif %}">
-      <td>{{ user.firstname }}</td>
-      <td>{{ user.name }}</td>
-      <td>{{ user.age }}</td>
+<table class="table">
+  <tr class="table-active">
+    <td>Firstname</td>
+    <td>Name</td>
+    <td>Age</td>
+    <td>Message</td>
+  </tr>
+  {% for user in users %}
+  <tr class="table-{% if loop.index is odd %}danger{% else %}warning{% endif %}">
+    <td>{{ user.firstname }}</td>
+    <td>{{ user.name }}</td>
+    <td>{{ user.age }}</td>
     <td>
       {{ render(controller(
-        'App\\Controller\\FirstController::sayHello', {name: user.firstname}
+      'App\\Controller\\FirstController::sayHello', {name: user.firstname}
       )) }}</td>
-    </tr>
-    {% endfor %}
-  </table>
+  </tr>
+  {% endfor %}
+</table>
 
 {% endblock %}

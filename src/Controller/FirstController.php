@@ -9,19 +9,26 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class FirstController extends AbstractController
 {
-    #[Route('/template', name: 'template')]
-    public function template(): Response
+    #[Route('/first', name: 'first')]
+    public function index2(): Response
     {
-        return $this->render('template.html.twig');    
+        return $this->render(
+            'first/index.html.twig', [
+            'firstName' => 'Mic',
+            'lastName' => 'CHLON',
+            'path' => '   ',
+            'nom' => 'CHLON'
+            ]
+        );    
     }
 
     // #[Route('/sayHello/{name}', name: 'say.hello')]
-    public function sayHello(Request $request,$name): Response
+    public function sayHello(Request $request, String $name): Response
     {
         // dd($request);
 
         return $this->render(
-            'first/index.html.twig', [
+            'first/hello.html.twig', [
                 'controller_name' => 'FirstController',
                 'lastName' => 'CHLON',
                 'firstName' => 'Mic',
@@ -37,7 +44,7 @@ class FirstController extends AbstractController
         name: 'multi', 
         // requirements: ['entier1' => '\d+', 'entier2' => '\d+']
     )]
-    public function multiplication($entier1,$entier2): Response
+    public function multiplication($entier1, $entier2): Response
     {
         $resultat = $entier1 * $entier2;
         return new Response("<h1>$resultat</h1>");
