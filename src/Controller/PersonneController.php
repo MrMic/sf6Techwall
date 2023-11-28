@@ -8,9 +8,23 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/personne')]
 class PersonneController extends AbstractController
 {
-    #[Route('/personne/add', name: 'parsonne.add')]
+    #[Route('/', name: 'personne.list')]
+    public function index(ManagerRegistry $doctrine) : Response
+    {
+        $repository = $doctrine->getRepository(Personne::class);
+        $personnes = $repository->findAll();  
+
+        return $this->render(
+            'personne/index.html.twig', [
+            'personnes' => $personnes
+            ]
+        );
+    }
+    
+    #[Route('/add', name: 'parsonne.add')]
     public function addPersonne(ManagerRegistry $doctrine): Response
     {
         // $this->getDoctrine : Sf <= 5
