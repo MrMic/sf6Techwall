@@ -23,6 +23,38 @@ class PersonneController extends AbstractController
             ]
         );
     }
+
+    #[Route('/alls/{page?1}/{nbre?10}', name: 'personne.list.alls')]
+    public function indexAlls(ManagerRegistry $doctrine) : Response
+    {
+        $repository = $doctrine->getRepository(Personne::class);
+        $personnes = $repository->findBy(['name' => [ 'Gilles', 'Vasseur' ]], ['age' => 'ASC'], limit: 5, offset: 1);  
+
+        return $this->render(
+            'personne/index.html.twig', [
+            'personnes' => $personnes
+            ]
+        );
+    }
+
+    #[Route('/{id<\d+>}', name: 'personne.detail')]
+    public function detail(Personne $personne = null) : Response
+    // public function detail(ManagerRegistry $doctrine, int $id) : Response
+    {
+        // $repository = $doctrine->getRepository(Personne::class);
+        // $personne = $repository->find($id);  
+
+        if (!$personne) {
+            $this->addFlash('error', "La personne n'existe pas");
+            return $this->redirectToRoute('personne.list');
+        }
+
+        return $this->render(
+            'personne/detail.html.twig', [
+            'personne' => $personne
+            ]
+        );
+    }
     
     #[Route('/add', name: 'parsonne.add')]
     public function addPersonne(ManagerRegistry $doctrine): Response
