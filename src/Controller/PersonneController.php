@@ -24,15 +24,24 @@ class PersonneController extends AbstractController
         );
     }
 
-    #[Route('/alls/{page?1}/{nbre?10}', name: 'personne.list.alls')]
-    public function indexAlls(ManagerRegistry $doctrine) : Response
+    #[Route('/alls/{page?1}/{nbre?12}', name: 'personne.list.alls')]
+    public function indexAlls(ManagerRegistry $doctrine, $page, $nbre) : Response
     {
         $repository = $doctrine->getRepository(Personne::class);
-        $personnes = $repository->findBy(['name' => [ 'Gilles', 'Vasseur' ]], ['age' => 'ASC'], limit: 5, offset: 1);  
+        $nbPersonnes = count($repository->findAll());
+        $nbPages = ceil($nbPersonnes / $nbre);
+        // TODO: Finir calcul pagination
+ 
+        $personnes = $repository->findBy(
+            [], [], 
+            limit: $nbre, 
+            offset: ($page - 1) * $nbre
+        );  
 
         return $this->render(
             'personne/index.html.twig', [
-            'personnes' => $personnes
+                'personnes' => $personnes,
+                'isPaginated' => true
             ]
         );
     }
