@@ -30,7 +30,6 @@ class PersonneController extends AbstractController
         $repository = $doctrine->getRepository(Personne::class);
         $nbPersonnes = count($repository->findAll());
         $nbPages = ceil($nbPersonnes / $nbre);
-        // TODO: Finir calcul pagination
  
         $personnes = $repository->findBy(
             [], [], 
@@ -41,7 +40,10 @@ class PersonneController extends AbstractController
         return $this->render(
             'personne/index.html.twig', [
                 'personnes' => $personnes,
-                'isPaginated' => true
+                'isPaginated' => true,
+                'nbPages' => $nbPages,
+                'page' => $page,
+                'nbre' => $nbre
             ]
         );
     }
