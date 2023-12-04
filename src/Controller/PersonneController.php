@@ -19,7 +19,8 @@ class PersonneController extends AbstractController
 
         return $this->render(
             'personne/index.html.twig', [
-            'personnes' => $personnes
+                'personnes' => $personnes,
+                'isPaginated' => false
             ]
         );
     }
@@ -95,5 +96,49 @@ class PersonneController extends AbstractController
             'personne' => $personne
             ]
         );
+    }
+
+    #[Route('/update/{id<\d+>}/{name}/{firstname}/{age<\d+>}', name: 'personne.update')]
+    public function updatePersonne(
+        Personne $personne = null,
+        ManagerRegistry $doctrine,
+        string $name,
+        string $firstname,
+        int $age,
+    ): Response {
+        if (!$personne) {
+            $this->addFlash('error', "La personne n'existe pas");
+            return $this->redirectToRoute('personne.list');
+        }
+        $personne->setName($name);
+        $personne->setFirstname($firstname);
+        $personne->setAge($age);
+
+        $manager = $doctrine->getManager();
+        $manager->persist($personne);
+
+        $manager->flush();
+        $this->addFlash('success', "La personne a bien été modifié");
+
+        return $this->redirectToRoute('personne.list');
+    }
+
+    #[Route('/delete/{id<\d+>}', name: 'personne.delete')]
+    public function deletePersonne(
+        Personne $personne = null,
+        ManagerRegistry $doctrine,
+    ) : Response {
+        if (!$personne) {
+            $this->addFlash('error', "La personne n'existe pas");
+            return $this->redirectToRoute('personne.list');
+        }
+
+        $manager = $doctrine->getManager();
+        $manager->remove($personne);
+
+        $manager->flush();
+        $this->addFlash('success', "La personne a bien été supprimé");
+
+        return $this->redirectToRoute('personne.list');
     }
 }
