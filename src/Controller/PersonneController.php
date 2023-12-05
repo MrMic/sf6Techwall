@@ -25,6 +25,23 @@ class PersonneController extends AbstractController
         );
     }
 
+    #[Route('/age/{ageMin<\d+>}/{ageMax<\d+>}', name: 'personne.list.age')]
+    public function personnesBetweenAge(ManagerRegistry $doctrine, $ageMin, $ageMax) : Response
+    {
+        $repository = $doctrine->getRepository(Personne::class);
+        $personnes = $repository->FindPersonnesByAgeInterval($ageMin, $ageMax);
+
+        return $this->render(
+            'personne/index.html.twig', [
+                'personnes' => $personnes,
+                'isPaginated' => false
+
+            ]
+        );
+        
+    }
+
+
     #[Route('/alls/{page?1}/{nbre?12}', name: 'personne.list.alls')]
     public function indexAlls(ManagerRegistry $doctrine, $page, $nbre) : Response
     {
