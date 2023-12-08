@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Personne;
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +12,13 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/personne')]
 class PersonneController extends AbstractController
 {
+    private $em;
+
+    public function __construct(EntityManagerInterface $em)
+    {
+        $this->em = $em;
+    }
+
     #[Route('/', name: 'personne.list')]
     public function index(ManagerRegistry $doctrine) : Response
     {
@@ -28,8 +36,9 @@ class PersonneController extends AbstractController
     #[Route('/age/{ageMin<\d+>}/{ageMax<\d+>}', name: 'personne.list.age')]
     public function personnesBetweenAge(ManagerRegistry $doctrine, $ageMin, $ageMax) : Response
     {
-        $repository = $doctrine->getRepository(Personne::class);
-        $personnes = $repository->FindPersonnesByAgeInterval($ageMin, $ageMax);
+        // $repository = $doctrine->getRepository(Personne::class);
+        $repository = $this->em->getRepository(Personne::class);
+        $personnes = $repository->findPersonnesByAgeInterval($ageMin, $ageMax);
 
         return $this->render(
             'personne/index.html.twig', [
@@ -41,6 +50,24 @@ class PersonneController extends AbstractController
         
     }
 
+    #[Route('/stats/{ageMin<\d+>}/{ageMax<\d+>}', name: 'personne.list.stats')]
+    public function statsPersonnesBetweenAge(ManagerRegistry $doctrine, $ageMin, $ageMax) : Response
+    {
+        // $repository = $doctrine->getRepository(Personne::class);
+        $repository = $this->em->getRepository(Personne::class);
+        $stats = $repository->statsPersonnesByAgeInterval($ageMin, $ageMax);
+
+        // dd($stats);
+        return $this->render(
+            'personne/stats.html.twig', [
+                'stats' => $stats[0],
+                'ageMin' => $ageMin,
+                'ageMax' => $ageMax
+
+            ]
+        );
+        
+    }
 
     #[Route('/alls/{page?1}/{nbre?12}', name: 'personne.list.alls')]
     public function indexAlls(ManagerRegistry $doctrine, $page, $nbre) : Response
