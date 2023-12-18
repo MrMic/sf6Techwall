@@ -26,6 +26,11 @@ class Profile
     #[ORM\OneToOne(mappedBy: 'profile', cascade: ['persist', 'remove'])]
     private ?Personne $personne = null;
 
+    public function __toString(): string
+    {
+        return $this->rs . ' - ' . $this->url;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

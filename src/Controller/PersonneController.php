@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Personne;
+use App\Form\PersonneType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -119,9 +120,13 @@ class PersonneController extends AbstractController
         $entityManager = $doctrine->getManager();
 
         $personne = new Personne();
-        $personne->setFirstname('Michael');
-        $personne->setName('CHLON');
-        $personne->setAge('50');
+        // NOTE: $personne est l'image de notre formulaire
+        $form = $this->createForm(PersonneType::class, $personne);
+
+        // $personne = new Personne();
+        // $personne->setFirstname('Michael');
+        // $personne->setName('CHLON');
+        // $personne->setAge('50');
 
         // $personne2 = new Personne();
         // $personne2->setFirstname('Toto');
@@ -129,15 +134,17 @@ class PersonneController extends AbstractController
         // $personne2->setAge('5');
 
         // Ajouter l'pération de la personne dans la transaction
-        $entityManager->persist($personne);
+        // $entityManager->persist($personne);
         // $entityManager->persist($personne2);
 
         // Execute la transaction
-        $entityManager->flush();
+        // $entityManager->flush();
 
         return $this->render(
-            'personne/detail.html.twig', [
-            'personne' => $personne
+            // 'personne/detail.html.twig', [
+            'personne/add-personne.html.twig', [
+                'form' => $form->createView(),
+                // 'personne' => $personne
             ]
         );
     }

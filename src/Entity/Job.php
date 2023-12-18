@@ -30,6 +30,11 @@ class Job
         $this->personnes = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->designation;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
