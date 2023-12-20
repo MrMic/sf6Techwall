@@ -7,6 +7,7 @@ use App\Form\PersonneType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -113,8 +114,8 @@ class PersonneController extends AbstractController
         );
     }
     
-    #[Route('/add', name: 'parsonne.add')]
-    public function addPersonne(ManagerRegistry $doctrine): Response
+    #[Route('/add', name: 'personne.add')]
+    public function addPersonne(ManagerRegistry $doctrine, Request $request): Response
     {
         // $this->getDoctrine : Sf <= 5
         $entityManager = $doctrine->getManager();
@@ -122,6 +123,8 @@ class PersonneController extends AbstractController
         $personne = new Personne();
         // NOTE: $personne est l'image de notre formulaire
         $form = $this->createForm(PersonneType::class, $personne);
+        $form->remove('createdAt');
+        $form->remove('updatedAt');
 
         // $personne = new Personne();
         // $personne->setFirstname('Michael');
@@ -139,14 +142,26 @@ class PersonneController extends AbstractController
 
         // Execute la transaction
         // $entityManager->flush();
+        
+        // dump($request);
+        $form->handleRequest($request);
 
-        return $this->render(
-            // 'personne/detail.html.twig', [
-            'personne/add-personne.html.twig', [
-                'form' => $form->createView(),
-                // 'personne' => $personne
-            ]
-        );
+        if ($form->isSubmitted()) {
+            // dd($personne);
+            // $personne = $form->getData();
+            $entityManager->persist($personne);
+            $entityManager->flush();
+            $this->addFlash('success', "La personne a bien été ajoutée");
+
+            return $this->redirectToRoute('personne.list.alls');
+        } else {
+            return $this->render(
+                'personne/add-personne.html.twig', [
+                    'form' => $form->createView(),
+                ]
+            );
+        }
+
     }
 
     #[Route('/update/{id<\d+>}/{name}/{firstname}/{age<\d+>}', name: 'personne.update')]
