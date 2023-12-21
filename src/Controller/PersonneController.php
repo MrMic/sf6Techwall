@@ -114,44 +114,41 @@ class PersonneController extends AbstractController
         );
     }
     
-    #[Route('/add', name: 'personne.add')]
-    public function addPersonne(ManagerRegistry $doctrine, Request $request): Response
+    #[Route('/edit/{id?0}', name: 'personne.edit')]
+    public function editPersonne(Personne $personne = null, ManagerRegistry $doctrine, Request $request): Response
     {
-        // $this->getDoctrine : Sf <= 5
-        $entityManager = $doctrine->getManager();
 
-        $personne = new Personne();
+        $new = false;
+
+        if (!$personne) {
+            $new = true;
+            $personne = new Personne();
+        }
+
         // NOTE: $personne est l'image de notre formulaire
         $form = $this->createForm(PersonneType::class, $personne);
         $form->remove('createdAt');
         $form->remove('updatedAt');
 
-        // $personne = new Personne();
-        // $personne->setFirstname('Michael');
-        // $personne->setName('CHLON');
-        // $personne->setAge('50');
-
-        // $personne2 = new Personne();
-        // $personne2->setFirstname('Toto');
-        // $personne2->setName('CHLON');
-        // $personne2->setAge('5');
-
-        // Ajouter l'pération de la personne dans la transaction
-        // $entityManager->persist($personne);
-        // $entityManager->persist($personne2);
-
-        // Execute la transaction
-        // $entityManager->flush();
-        
         // dump($request);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()) {
             // dd($personne);
             // $personne = $form->getData();
+
+            // $this->getDoctrine : Sf <= 5
+            $entityManager = $doctrine->getManager();
             $entityManager->persist($personne);
+
+            // Execute la transaction
             $entityManager->flush();
-            $this->addFlash('success', "La personne a bien été ajoutée");
+            if ($new) {
+                $message = "a bien été ajoutée avec succès";
+            } else {
+                $message = "a bien été mis à jour avec succès";
+            }
+            $this->addFlash('success', $personne->getName() . ' ' . $personne->getFirstname() . ' ' . $message);
 
             return $this->redirectToRoute('personne.list.alls');
         } else {
