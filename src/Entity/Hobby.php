@@ -30,10 +30,10 @@ class Hobby
         $this->personnes = new ArrayCollection();
     }
 
-    public function __toString(): string
-    {
-        return $this->designation;
-    }
+    // public function __toString(): string
+    // {
+    //     return $this->designation;
+    // }
 
     public function getId(): ?int
     {
