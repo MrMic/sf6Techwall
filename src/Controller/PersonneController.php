@@ -7,9 +7,11 @@ use App\Form\PersonneType;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/personne')]
 class PersonneController extends AbstractController
@@ -115,7 +117,12 @@ class PersonneController extends AbstractController
     }
     
     #[Route('/edit/{id?0}', name: 'personne.edit')]
-    public function editPersonne(Personne $personne = null, ManagerRegistry $doctrine, Request $request): Response
+    public function editPersonne(
+        Personne $personne = null,
+        ManagerRegistry $doctrine,
+        Request $request,
+        SluggerInterface $slugger,
+    ): Response
     {
 
         $new = false;
@@ -136,6 +143,24 @@ class PersonneController extends AbstractController
         if ($form->isSubmitted()) {
             // dd($personne);
             // $personne = $form->getData();
+
+            $photoFile = $form->get('photo')->getData();
+            if ($photoFile) {
+                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                // this is needed to safely include the file name as part of the URL
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
+                try {
+                    $photoFile->move(
+                        $this->getParameter('photos_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                }
+
+                $personne->setImage($newFilename);
+
+            }
 
             // $this->getDoctrine : Sf <= 5
             $entityManager = $doctrine->getManager();

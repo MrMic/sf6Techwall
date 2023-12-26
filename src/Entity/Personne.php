@@ -39,6 +39,9 @@ class Personne
     #[ORM\ManyToOne(inversedBy: 'personnes')]
     private ?Job $job = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $image = null;
+
     // #[ORM\Column(nullable: true)]
     // private ?\DateTime $createdAt = null;
     //
@@ -175,4 +178,16 @@ class Personne
     // {
     //     $this->updatedAt = new \DateTime();
     // }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): static
+    {
+        $this->image = $image;
+
+        return $this;
+    }
 }
