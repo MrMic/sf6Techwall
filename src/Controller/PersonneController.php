@@ -140,7 +140,7 @@ class PersonneController extends AbstractController
         // dump($request);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted() && $form->isValid()) {
             // dd($personne);
             // $personne = $form->getData();
 
