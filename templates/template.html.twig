@@ -8,11 +8,14 @@
   <meta name="description" content="" />
   <meta name="author" content="" />
   <title>
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ TITLE TEMPLATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
       {% block title %}
         TITLE TEMPLATE
       {% endblock %}
+  <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
     </title>
     <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
+    <link href="{{ asset('node_modules/select2/dist/css/select2.min.css')}}" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
@@ -144,9 +147,11 @@
               <div class="alert alert-danger">{{ message }}</div>
               {% endfor %}
               <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
+              <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━ BODY TEMPLATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
               {% block body %}
                 Body Template
               {% endblock %}
+              <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
             </div>
           </div>
           <div style="height: 100vh"></div>
@@ -172,6 +177,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
     crossorigin="anonymous"></script>
   <script src="{{ asset('js/scripts.js') }}"></script>
+  <script src="{{ asset('node_modules/jquery/dist/jquery.min.js') }}"></script>
+  <script src="{{ asset('node_modules/select2/dist/js/select2.min.js') }}"></script>
 </body>
 
 </html>
