@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Hobby;
+use App\Entity\Job;
 use App\Entity\Personne;
 use App\Entity\Profile;
 use Doctrine\ORM\EntityRepository;
@@ -31,8 +32,11 @@ class PersonneType extends AbstractType
                 options: [
                     'class' => Profile::class,
                     'required' => false,
-                    'expanded' => true,
-                    'multiple' => false
+                    'expanded' => false,
+                    'multiple' => false,
+                    'attr' => [
+                        'class' => 'select2'
+                    ],
                 ]
             )
             ->add(
@@ -40,16 +44,31 @@ class PersonneType extends AbstractType
                 type: EntityType::class, 
                 options: [
                     'class' => Hobby::class,
+                    'required' => false,
                     'expanded' => false,
                     'multiple' => true,
                     'query_builder' => function (EntityRepository $er) {
                         return $er->createQueryBuilder('h')
                             ->orderBy('h.designation', 'ASC');
                     },
-                    'choice_label' => 'designation'
+                    'choice_label' => 'designation',
+                    'attr' => [
+                        'class' => 'select2'
+                    ],
                 ] 
             )
-            ->add('job')
+            ->add(
+                child: 'job',
+                type: EntityType::class,
+                options: [
+                    'class' => Job::class,
+                    'required' => false,
+                    'expanded' => false,
+                    'attr' => [
+                        'class' => 'select2'
+                    ],
+                    
+                ])
             ->add(
                 child: 'photo', 
                 type: FileType::class,
