@@ -12,9 +12,9 @@
           <h6 class="card-title">Liste des Personnes</h6>
           <h6 class="mb-2 card-subtitle text-muted">{{ personne.firstname }} {{ personne.name }}</h6>
           <p class="card-text">Age : {{ personne.age }}</p>
-          <a href="{{ path('personne.detail', {'id': personne.id}) }}" class="card-link">Details</a>
-          <a href="{{ path('personne.delete', {'id': personne.id}) }}" class="card-link">Supprimer</a>
-          <a href="{{ path('personne.edit', {'id': personne.id}) }}" class="card-link">Éditer</a>
+          <a href="{{ path('personne.detail', {'id': personne.id}) }}" class="card-link"><i class="fas fa-info-circle"></i></a>
+          <a href="{{ path('personne.delete', {'id': personne.id}) }}" class="card-link"><i class="fas fa-user-times"></i></a>
+          <a href="{{ path('personne.edit', {'id': personne.id}) }}" class="card-link"><i class="fas fa-user-edit"></i></a>
         </div>
       </div>
     {% endfor %}
