@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Personne;
 use App\Form\PersonneType;
+use App\Service\Helpers;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +19,10 @@ class PersonneController extends AbstractController
 {
     private $em;
 
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(
+        EntityManagerInterface $em,
+        private Helpers $helpers,
+    )
     {
         $this->em = $em;
     }
@@ -73,9 +77,20 @@ class PersonneController extends AbstractController
         
     }
 
+    /**
+     * Liste toutes les personnes 
+     *
+     * @param ManagerRegistry $doctrine Registry Manager 
+     * @param Number $page Numero de page
+     * @param Number $nbre Nombre d'item par page
+     * @return Response
+     */
     #[Route('/alls/{page?1}/{nbre?12}', name: 'personne.list.alls')]
     public function indexAlls(ManagerRegistry $doctrine, $page, $nbre) : Response
     {
+        // $helpers = new Helpers();
+        echo($this->helpers->sayCc());
+
         $repository = $doctrine->getRepository(Personne::class);
         $nbPersonnes = count($repository->findAll());
         $nbPages = ceil($nbPersonnes / $nbre);
