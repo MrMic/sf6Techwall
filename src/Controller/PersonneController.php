@@ -5,14 +5,13 @@ namespace App\Controller;
 use App\Entity\Personne;
 use App\Form\PersonneType;
 use App\Service\Helpers;
+use App\Service\UploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[Route('/personne')]
 class PersonneController extends AbstractController
@@ -136,7 +135,7 @@ class PersonneController extends AbstractController
         Personne $personne = null,
         ManagerRegistry $doctrine,
         Request $request,
-        SluggerInterface $slugger,
+        UploaderService $uploaderService
     ): Response
     {
 
@@ -161,20 +160,8 @@ class PersonneController extends AbstractController
 
             $photoFile = $form->get('photo')->getData();
             if ($photoFile) {
-                $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
-                // this is needed to safely include the file name as part of the URL
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
-                try {
-                    $photoFile->move(
-                        $this->getParameter('photos_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                }
-
-                $personne->setImage($newFilename);
-
+                $directory = $this->getParameter('photos_directory');
+                $personne->setImage($uploaderService->upload($photoFile, $directory));
             }
 
             // $this->getDoctrine : Sf <= 5
