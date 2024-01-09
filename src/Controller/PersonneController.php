@@ -5,19 +5,25 @@ namespace App\Controller;
 use App\Entity\Personne;
 use App\Form\PersonneType;
 use App\Service\Helpers;
+use App\Service\MailerService;
+use App\Service\PdfService;
 use App\Service\UploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Dompdf\Dompdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+// ______________________________________________________________________
 #[Route('/personne')]
+// ______________________________________________________________________
 class PersonneController extends AbstractController
 {
     private $em;
 
+// ══════════════════════════════ __construct ══════════════════════════════
     public function __construct(
         EntityManagerInterface $em,
         private Helpers $helpers,
@@ -26,6 +32,7 @@ class PersonneController extends AbstractController
         $this->em = $em;
     }
 
+// ______________________________________________________________________
     #[Route('/', name: 'personne.list')]
     public function index(ManagerRegistry $doctrine) : Response
     {
@@ -40,8 +47,31 @@ class PersonneController extends AbstractController
         );
     }
 
+// ______________________________________________________________________
+    #[Route('/pdf/{id}', name: 'personne.pdf')]
+    public function generatePDFPersonne(
+        Personne $personne = null,
+        PdfService $pdfService,
+    ) : Response
+    {
+        $html = $this->render(
+            'personne/detail.html.twig', [
+               'personne' => $personne
+            ]
+        );
+
+
+        $pdfService->showPdfFile($html);
+
+    }
+
+// ______________________________________________________________________
     #[Route('/age/{ageMin<\d+>}/{ageMax<\d+>}', name: 'personne.list.age')]
-    public function personnesBetweenAge(ManagerRegistry $doctrine, $ageMin, $ageMax) : Response
+    public function personnesBetweenAge(
+        ManagerRegistry $doctrine,
+        $ageMin,
+        $ageMax,
+    ) : Response
     {
         // $repository = $doctrine->getRepository(Personne::class);
         $repository = $this->em->getRepository(Personne::class);
@@ -57,6 +87,7 @@ class PersonneController extends AbstractController
         
     }
 
+// ______________________________________________________________________
     #[Route('/stats/{ageMin<\d+>}/{ageMax<\d+>}', name: 'personne.list.stats')]
     public function statsPersonnesBetweenAge(ManagerRegistry $doctrine, $ageMin, $ageMax) : Response
     {
@@ -76,6 +107,7 @@ class PersonneController extends AbstractController
         
     }
 
+// ______________________________________________________________________
     /**
      * Liste toutes les personnes 
      *
@@ -111,6 +143,7 @@ class PersonneController extends AbstractController
         );
     }
 
+// ______________________________________________________________________
     #[Route('/{id<\d+>}', name: 'personne.detail')]
     public function detail(Personne $personne = null) : Response
     // public function detail(ManagerRegistry $doctrine, int $id) : Response
@@ -130,12 +163,14 @@ class PersonneController extends AbstractController
         );
     }
     
+// ______________________________________________________________________
     #[Route('/edit/{id?0}', name: 'personne.edit')]
     public function editPersonne(
         Personne $personne = null,
         ManagerRegistry $doctrine,
         Request $request,
-        UploaderService $uploaderService
+        UploaderService $uploaderService,
+        MailerService $mailerService
     ): Response
     {
 
@@ -175,6 +210,10 @@ class PersonneController extends AbstractController
             } else {
                 $message = "a bien été mis à jour avec succès";
             }
+
+            $mailMessage = "Bonjour " . $personne->getName() . ' ' . $personne->getFirstname() . ' ' . $message;
+            $mailerService->sendEmail(content: $mailMessage);
+
             $this->addFlash('success', $personne->getName() . ' ' . $personne->getFirstname() . ' ' . $message);
 
             return $this->redirectToRoute('personne.list.alls');
@@ -188,6 +227,7 @@ class PersonneController extends AbstractController
 
     }
 
+// ______________________________________________________________________
     #[Route('/update/{id<\d+>}/{name}/{firstname}/{age<\d+>}', name: 'personne.update')]
     public function updatePersonne(
         Personne $personne = null,
