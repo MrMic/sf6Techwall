@@ -199,17 +199,19 @@ class PersonneController extends AbstractController
                 $personne->setImage($uploaderService->upload($photoFile, $directory));
             }
 
+            if ($new) {
+                $message = "a bien été ajoutée avec succès";
+                $personne->setCreatedBy($this->getUser());
+            } else {
+                $message = "a bien été mis à jour avec succès";
+            }
+
             // $this->getDoctrine : Sf <= 5
             $entityManager = $doctrine->getManager();
             $entityManager->persist($personne);
 
             // Execute la transaction
             $entityManager->flush();
-            if ($new) {
-                $message = "a bien été ajoutée avec succès";
-            } else {
-                $message = "a bien été mis à jour avec succès";
-            }
 
             $mailMessage = "Bonjour " . $personne->getName() . ' ' . $personne->getFirstname() . ' ' . $message;
             $mailerService->sendEmail(content: $mailMessage);

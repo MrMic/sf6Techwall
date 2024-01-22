@@ -8,5 +8,8 @@
 <!-- {{ dump(personne) }} -->
 <div class="alert alert-success">
     {{ personne.firstName }} {{ personne.name }} a {{ personne.age }} an(s).
+    {% if app.user  %}
+       <p>Created By : {{ app.user.email }}</p>
+    {% endif %}
 </div>
 {% endblock %}
