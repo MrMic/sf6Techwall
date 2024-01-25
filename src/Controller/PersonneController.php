@@ -10,11 +10,11 @@ use App\Service\PdfService;
 use App\Service\UploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
-use Dompdf\Dompdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 // ______________________________________________________________________
 #[Route('/personne')]
@@ -32,7 +32,7 @@ class PersonneController extends AbstractController
         $this->em = $em;
     }
 
-// ______________________________________________________________________
+// ══════════════════════════════════════════════════════════════════════
     #[Route('/', name: 'personne.list')]
     public function index(ManagerRegistry $doctrine) : Response
     {
@@ -47,7 +47,7 @@ class PersonneController extends AbstractController
         );
     }
 
-// ______________________________________________________________________
+// ══════════════════════════════════════════════════════════════════════
     #[Route('/pdf/{id}', name: 'personne.pdf')]
     public function generatePDFPersonne(
         Personne $personne = null,
@@ -65,7 +65,7 @@ class PersonneController extends AbstractController
 
     }
 
-// ______________________________________________________________________
+// ══════════════════════════════════════════════════════════════════════
     #[Route('/age/{ageMin<\d+>}/{ageMax<\d+>}', name: 'personne.list.age')]
     public function personnesBetweenAge(
         ManagerRegistry $doctrine,
@@ -87,7 +87,7 @@ class PersonneController extends AbstractController
         
     }
 
-// ______________________________________________________________________
+// ══════════════════════════════════════════════════════════════════════
     #[Route('/stats/{ageMin<\d+>}/{ageMax<\d+>}', name: 'personne.list.stats')]
     public function statsPersonnesBetweenAge(ManagerRegistry $doctrine, $ageMin, $ageMax) : Response
     {
@@ -107,7 +107,7 @@ class PersonneController extends AbstractController
         
     }
 
-// ______________________________________________________________________
+// ══════════════════════════════════════════════════════════════════════
     /**
      * Liste toutes les personnes 
      *
@@ -116,11 +116,14 @@ class PersonneController extends AbstractController
      * @param Number $nbre Nombre d'item par page
      * @return Response
      */
-    #[Route('/alls/{page?1}/{nbre?12}', name: 'personne.list.alls')]
+    #[
+        Route('/alls/{page?1}/{nbre?12}', name: 'personne.list.alls'),
+        IsGranted('ROLE_USER')
+    ]
     public function indexAlls(ManagerRegistry $doctrine, $page, $nbre) : Response
     {
         // $helpers = new Helpers();
-        echo($this->helpers->sayCc());
+        // echo($this->helpers->sayCc());
 
         $repository = $doctrine->getRepository(Personne::class);
         $nbPersonnes = count($repository->findAll());
@@ -143,7 +146,8 @@ class PersonneController extends AbstractController
         );
     }
 
-// ______________________________________________________________________
+    // ══════════════════════════════════════════════════════════════════════
+
     #[Route('/{id<\d+>}', name: 'personne.detail')]
     public function detail(Personne $personne = null) : Response
     // public function detail(ManagerRegistry $doctrine, int $id) : Response
@@ -163,7 +167,7 @@ class PersonneController extends AbstractController
         );
     }
     
-// ______________________________________________________________________
+    // ══════════════════════════════════════════════════════════════════════
     #[Route('/edit/{id?0}', name: 'personne.edit')]
     public function editPersonne(
         Personne $personne = null,
@@ -173,7 +177,7 @@ class PersonneController extends AbstractController
         MailerService $mailerService
     ): Response
     {
-
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $new = false;
 
         if (!$personne) {
@@ -189,6 +193,7 @@ class PersonneController extends AbstractController
         // dump($request);
         $form->handleRequest($request);
 
+        // ______________________________________________________________________
         if ($form->isSubmitted() && $form->isValid()) {
             // dd($personne);
             // $personne = $form->getData();

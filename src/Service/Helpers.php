@@ -16,7 +16,7 @@ class Helpers {
   }
 
   public function sayCc(): string {
-    return 'cc';
+    // return 'cc';
   }
 
   public  function getUser(): User {
