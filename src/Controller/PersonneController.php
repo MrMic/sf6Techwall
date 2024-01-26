@@ -177,6 +177,7 @@ class PersonneController extends AbstractController
         MailerService $mailerService
     ): Response
     {
+        // NOTE: Security Access Control
         $this->denyAccessUnlessGranted('ROLE_ADMIN');
         $new = false;
 

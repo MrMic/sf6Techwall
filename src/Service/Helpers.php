@@ -11,7 +11,7 @@ class Helpers {
 
   // private $langue;
 
-  public function __construct(private LoggerInterface $logger, Security $security) {
+  public function __construct(private LoggerInterface $logger, private Security $security) {
     // $this->langue = $langue;
   }
 
@@ -20,6 +20,8 @@ class Helpers {
   }
 
   public  function getUser(): User {
-    return $this->security->getUser();
+    if ($this->security->isGranted('ROLE_ADMIN')) {
+      return $this->security->getUser();
+    }
   }
 }
