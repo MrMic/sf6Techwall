@@ -261,6 +261,7 @@ class PersonneController extends AbstractController
         return $this->redirectToRoute('personne.list');
     }
 
+    // ______________________________________________________________________
     #[Route('/delete/{id<\d+>}', name: 'personne.delete')]
     public function deletePersonne(
         Personne $personne = null,

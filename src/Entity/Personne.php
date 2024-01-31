@@ -54,6 +54,7 @@ class Personne
     // #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     // private ?\DateTimeInterface $updatedAt = null;
 
+    // ______________________________________________________________________
     public function __construct()
     {
         $this->hobbies = new ArrayCollection();

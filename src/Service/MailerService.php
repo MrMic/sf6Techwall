@@ -19,7 +19,7 @@ class MailerService
   public function sendEmail(
     $to = 'mic.a.elle.chlon@gmail.com', 
     $content = '<p>See Twig integration for better HTML integration!</p>', 
-    $subject='Hello Email from SYFONY 6') : void
+    $subject='Hello Email from SYMFONY 6') : void
   {
     // NOTE: OK
     // dd($this->replyTo);
@@ -33,7 +33,10 @@ class MailerService
       ->html($content);
 
 
+    // dd($email);
+
      $this->mailer->send($email);
-    
+
+
   }
 }
