@@ -5,57 +5,57 @@
 
 
 {% block body %}
-  <div class="row">
-    {% for personne in personnes %}
-      <div class="card" style="width: 21rem;">
-        <div class="card-body">
-          <h6 class="card-title">Liste des Personnes</h6>
-          <h6 class="mb-2 card-subtitle text-muted">{{ personne.firstname }} {{ personne.name }}</h6>
-          <p class="card-text">Age : {{ personne.age }}</p>
-          <a href="{{ path('personne.detail', {'id': personne.id}) }}" class="card-link"><i class="fas fa-info-circle"></i></a>
-          <a href="{{ path('personne.delete', {'id': personne.id}) }}" class="card-link"><i class="fas fa-user-times"></i></a>
-          <a href="{{ path('personne.edit', {'id': personne.id}) }}" class="card-link"><i class="fas fa-user-edit"></i></a>
-        </div>
-      </div>
-    {% endfor %}
-  </div>
-
-  {% if isPaginated %}
-
-    <div class="mt-2">
-      <nav aria-label="Page navigation example">
-        <ul class="pagination justify-content-center">
-          {% if page != 1 %}
-            <li class="page-item">
-              <a class="page-link"
-                href="{{ path('personne.list.alls', {'page': page - 1, 'nbre': nbre}) }}"
-              >
-                Previous
-              </a>
-            </li>
-          {% endif %}
-          {% for i in range(1, nbPages) %}
-            <li class="page-item">
-              <a class="page-link"
-                href="{{ path('personne.list.alls', {'page': i, 'nbre': nbre}) }}"
-              >
-                {{ i }}
-              </a>
-      </li>
-          {% endfor %}
-          {% if page != nbPages %}
-            <li class="page-item">
-              <a class="page-link"
-                href="{{ path('personne.list.alls', {'page': page + 1, 'nbre': nbre}) }}"
-              >
-                Next
-              </a>
-            </li>
-          {% endif %}
-        </ul>
-      </nav>
+<div class="row">
+  {% for personne in personnes %}
+  <div class="card" style="width: 21rem;">
+    <div class="card-body">
+      <h6 class="card-title">Liste des Personnes</h6>
+      <h6 class="mb-2 card-subtitle text-muted">{{ personne.firstname }} {{ personne.name }}</h6>
+      <p class="card-text">Age : {{ personne.age }}</p>
+      <a href="{{ path('personne.detail', {'id': personne.id}) }}" class="card-link"><i
+          class="fas fa-info-circle"></i></a>
+      <!-- ______________________________________________________________________ -->
+      {% if is_granted('ROLE_ADMIN') %}
+      <a href="{{ path('personne.delete', {'id': personne.id}) }}" class="card-link"><i
+          class="fas fa-user-times"></i></a>
+      <a href="{{ path('personne.edit', {'id': personne.id}) }}" class="card-link"><i class="fas fa-user-edit"></i></a>
+      {% endif %}
+      <!-- ______________________________________________________________________ -->
     </div>
+  </div>
+  {% endfor %}
+</div>
 
-  {% endif %}
+{% if isPaginated %}
+
+<div class="mt-2">
+  <nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+      {% if page != 1 %}
+      <li class="page-item">
+        <a class="page-link" href="{{ path('personne.list.alls', {'page': page - 1, 'nbre': nbre}) }}">
+          Previous
+        </a>
+      </li>
+      {% endif %}
+      {% for i in range(1, nbPages) %}
+      <li class="page-item">
+        <a class="page-link" href="{{ path('personne.list.alls', {'page': i, 'nbre': nbre}) }}">
+          {{ i }}
+        </a>
+      </li>
+      {% endfor %}
+      {% if page != nbPages %}
+      <li class="page-item">
+        <a class="page-link" href="{{ path('personne.list.alls', {'page': page + 1, 'nbre': nbre}) }}">
+          Next
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+
+{% endif %}
 
 {% endblock %}

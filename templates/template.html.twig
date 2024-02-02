@@ -9,21 +9,21 @@
   <meta name="author" content="" />
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━ NOTE: TITLE TEMPLATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
   <title>
-      {% block title %}
-        TITLE TEMPLATE
-      {% endblock %}
-    </title>
+    {% block title %}
+    TITLE TEMPLATE
+    {% endblock %}
+  </title>
   <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
-    <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
-    <link href="{{ asset('node_modules/@fortawesome/fontawesome-free/css/all.css') }}" rel="stylesheet" />
-    <link href="{{ asset('node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
+  <link href="{{ asset('css/styles.css') }}" rel="stylesheet" />
+  <link href="{{ asset('node_modules/@fortawesome/fontawesome-free/css/all.css') }}" rel="stylesheet" />
+  <link href="{{ asset('node_modules/select2/dist/css/select2.min.css') }}" rel="stylesheet" />
   <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
   <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
     <!-- Navbar Brand-->
-      <a class="navbar-brand ps-3" href="/personne/">CV TECH</a>
+    <a class="navbar-brand ps-3" href="/personne/">CV TECH</a>
     <!-- Sidebar Toggle-->
     <button class="order-1 btn btn-link btn-sm order-lg-0 me-4 me-lg-0" id="sidebarToggle" href="#!"><i
         class="fas fa-bars"></i></button>
@@ -41,15 +41,22 @@
         <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown"
           aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+          <!-- ______________________________________________________________________ -->
+          {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+          <li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>
+          {% else %}
           <li><a class="dropdown-item" href="{{ path('app_login') }}">Login</a></li>
           <li><a class="dropdown-item" href="{{ path('app_register') }}">Register</a></li>
-          <li><a class="dropdown-item" href="{{ path('app_logout') }}">Logout</a></li>
+          {% endif %}
+          <!-- ______________________________________________________________________ -->
         </ul>
       </li>
     </ul>
   </nav>
   <div id="layoutSidenav">
     <div id="layoutSidenav_nav">
+
+      {% if is_granted('IS_AUTHENTICATED_FULLY') %}
       <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
           <div class="nav">
@@ -59,16 +66,16 @@
               Dashboard
             </a>
             <div class="sb-sidenav-menu-heading">Pages</div>
-              <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
+            <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapseLayouts"
               aria-expanded="false" aria-controls="collapseLayouts">
               <div class="sb-nav-link-icon"><i class="fas fa-columns"></i></div>
-               Users
+              Users
               <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
             </a>
             <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
               <nav class="sb-sidenav-menu-nested nav">
-                  <a class="nav-link" href="{{ path('first') }}">First</a>
-                  <a class="nav-link" href="{{ path('tab.users') }}">Users</a>
+                <a class="nav-link" href="{{ path('first') }}">First</a>
+                <a class="nav-link" href="{{ path('tab.users') }}">Users</a>
               </nav>
             </div>
             <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
@@ -79,7 +86,7 @@
             </a>
             <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
               <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
-                <a class="nav-link " href="{{ path('personne.list.alls') }}" >
+                <a class="nav-link " href="{{ path('personne.list.alls') }}">
                   Liste des personnes
                 </a>
                 <!-- <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" -->
@@ -90,9 +97,13 @@
                 <!--     <a class="nav-link" href="password.html">Forgot Password</a> -->
                 <!--   </nav> -->
                 <!-- </div> -->
-                <a class="nav-link collapsed" href="{{ path('personne.edit') }}" >
+                <!-- ______________________________________________________________________ -->
+                {% if is_granted('ROLE_ADMIN') %}
+                <a class="nav-link collapsed" href="{{ path('personne.edit') }}">
                   Ajouter une personne
                 </a>
+                {% endif %}
+                <!-- ______________________________________________________________________ -->
               </nav>
             </div>
             <!-- <div class="sb-sidenav-menu-heading">Addons</div> -->
@@ -107,23 +118,24 @@
           </div>
         </div>
         <!-- ______________________________________________________________________ -->
-          <div class="sb-sidenav-footer">
-            <div class="small">Logged in as:</div>
-              {% if app.user %}
-                {{ app.user.email }}
-              {% else %}
-                Anonymous
-              {% endif %}
-          </div>
+        <div class="sb-sidenav-footer">
+          <div class="small">Logged in as:</div>
+          {% if app.user %}
+          {{ app.user.email }}
+          {% else %}
+          Anonymous
+          {% endif %}
+        </div>
         <!-- ______________________________________________________________________ -->
       </nav>
+      {% endif %}
     </div>
     <div id="layoutSidenav_content">
       <main>
         <div class="px-4 container-fluid">
           <h1 class="mt-4">
             {% block PageTitle %}
-             PageTitle Template
+            PageTitle Template
             {% endblock %}
           </h1>
           <div class="mb-4 card">
@@ -141,14 +153,15 @@
               <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
               <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━ NOTE: BODY TEMPLATE ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
               {% block body %}
-                Body Template
+              Body Template
               {% endblock %}
               <!-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━-->
             </div>
           </div>
           <div style="height: 100vh"></div>
           <div class="mb-4 card">
-            <div class="card-body">When scrolling, the navigation stays at the top of the page. This is the end of the static navigation demo.</div>
+            <div class="card-body">When scrolling, the navigation stays at the top of the page. This is the end of the
+              static navigation demo.</div>
           </div>
         </div>
       </main>

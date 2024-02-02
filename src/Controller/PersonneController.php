@@ -17,7 +17,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 // ______________________________________________________________________
-#[Route('/personne')]
+#[
+    Route('/personne'), 
+    IsGranted('ROLE_USER')
+]
 // ______________________________________________________________________
 class PersonneController extends AbstractController
 {
@@ -236,7 +239,10 @@ class PersonneController extends AbstractController
     }
 
 // ______________________________________________________________________
-    #[Route('/update/{id<\d+>}/{name}/{firstname}/{age<\d+>}', name: 'personne.update')]
+    #[ 
+        Route('/update/{id<\d+>}/{name}/{firstname}/{age<\d+>}', name: 'personne.update'),
+        IsGranted('ROLE_ADMIN')
+    ]
     public function updatePersonne(
         Personne $personne = null,
         ManagerRegistry $doctrine,
