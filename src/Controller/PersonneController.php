@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Personne;
+use App\Event\AddPersonneEvent;
 use App\Form\PersonneType;
 use App\Service\Helpers;
 use App\Service\MailerService;
@@ -11,6 +12,7 @@ use App\Service\UploaderService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,6 +32,7 @@ class PersonneController extends AbstractController
     public function __construct(
         EntityManagerInterface $em,
         private Helpers $helpers,
+            private  EventDispatcherInterface $dispatcher
     )
     {
         $this->em = $em;
@@ -221,6 +224,16 @@ class PersonneController extends AbstractController
 
             // Execute la transaction
             $entityManager->flush();
+
+            if ($new) {
+                // _______________________ Création de lévénement ____________________
+                $addPersonneEvent = new AddPersonneEvent($personne);
+                // ______________________ On dispatche l'événement ___________________
+                $this->dispatcher->dispatch(
+                    $addPersonneEvent,
+                    $addPersonneEvent::ADD_PERSONNE_EVENT,
+                );
+            }
 
             $mailMessage = "Bonjour " . $personne->getName() . ' ' . $personne->getFirstname() . ' ' . $message;
             $mailerService->sendEmail(content: $mailMessage);
