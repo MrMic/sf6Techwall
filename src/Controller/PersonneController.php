@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Personne;
 use App\Event\AddPersonneEvent;
+use App\Event\ListAllPersonnesEvent;
 use App\Form\PersonneType;
 use App\Service\Helpers;
 use App\Service\MailerService;
@@ -83,6 +84,7 @@ class PersonneController extends AbstractController
         $repository = $this->em->getRepository(Personne::class);
         $personnes = $repository->findPersonnesByAgeInterval($ageMin, $ageMax);
 
+
         return $this->render(
             'personne/index.html.twig', [
                 'personnes' => $personnes,
@@ -140,6 +142,14 @@ class PersonneController extends AbstractController
             limit: $nbre, 
             offset: ($page - 1) * $nbre
         );  
+
+        // ____________________ HACK: EVENT CREATED and DISPATCHED _________________
+        $listAllPersonnesEvent = new ListAllPersonnesEvent(count($personnes));
+        $this->dispatcher->dispatch(
+            $listAllPersonnesEvent,
+            ListAllPersonnesEvent::LIST_ALL_PERSONNES_EVENT,
+        );
+        // ______________________________________________________________________
 
         return $this->render(
             'personne/index.html.twig', [
